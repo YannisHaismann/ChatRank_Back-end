@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -66,19 +68,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $phone_number;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity=Type::class, inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $id_sex;
+    private $type;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity=Sex::class, inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $id_type;
+    private $sex;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="simple_array", nullable=true)
      */
-    private $id_lol;
+    private $viewers = [];
+
+    /**
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $streamers = [];
 
     public function getId(): ?int
     {
@@ -236,38 +245,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIdSex(): ?int
+    public function getType(): ?Type
     {
-        return $this->id_sex;
+        return $this->type;
     }
 
-    public function setIdSex(int $id_sex): self
+    public function setType(?Type $type): self
     {
-        $this->id_sex = $id_sex;
+        $this->type = $type;
 
         return $this;
     }
 
-    public function getIdType(): ?int
+    public function getSex(): ?Sex
     {
-        return $this->id_type;
+        return $this->sex;
     }
 
-    public function setIdType(int $id_type): self
+    public function setSex(?Sex $sex): self
     {
-        $this->id_type = $id_type;
+        $this->sex = $sex;
 
         return $this;
     }
 
-    public function getIdLol(): ?int
+    public function getViewers(): ?array
     {
-        return $this->id_lol;
+        return $this->viewers;
     }
 
-    public function setIdLol(?int $id_lol): self
+    public function setViewers(?array $viewers): self
     {
-        $this->id_lol = $id_lol;
+        $this->viewers = $viewers;
+
+        return $this;
+    }
+
+    public function getStreamers(): ?array
+    {
+        return $this->streamers;
+    }
+
+    public function setStreamers(?array $streamers): self
+    {
+        $this->streamers = $streamers;
 
         return $this;
     }

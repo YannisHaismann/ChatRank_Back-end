@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\TypeRepository;
+use App\Repository\SexRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TypeRepository::class)
+ * @ORM\Entity(repositoryClass=SexRepository::class)
  */
-class Type
+class Sex
 {
     /**
      * @ORM\Id
@@ -20,12 +20,12 @@ class Type
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=100)
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="type")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="sex")
      */
     private $users;
 
@@ -63,7 +63,7 @@ class Type
     {
         if (!$this->users->contains($user)) {
             $this->users[] = $user;
-            $user->setType($this);
+            $user->setSex($this);
         }
 
         return $this;
@@ -73,8 +73,8 @@ class Type
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getType() === $this) {
-                $user->setType(null);
+            if ($user->getSex() === $this) {
+                $user->setSex(null);
             }
         }
 
