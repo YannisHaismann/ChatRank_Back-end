@@ -6,4 +6,4 @@
 
 3- composer install
 
-4- "php bin/console d:m:m"
+4- php bin/console d:m:m
