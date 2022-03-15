@@ -6,4 +6,6 @@
 
 3- composer install
 
-4- php bin/console d:m:m
+if you use mySQL, create database in phpMyAdmin and config the file .env
+
+if you use sqLite, enter this command : php bin/console d:m:m
