@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\RegistrationController;
+use App\Controller\UserByUsernameController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -13,70 +16,235 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
- * @ApiResource()
  */
+
+#[ApiResource(
+    collectionOperations: [
+        'get',
+        'by username' => [
+            'method' => 'GET',
+            'path' => '/users/find',
+            'controller' => UserByUsernameController::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Find user by username',
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'username',
+                        'schema' => [
+                            'type' => 'string'
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        'register' => [
+            'method' => 'POST',
+            'path' => '/users/register',
+            'controller' => RegistrationController::class,
+            'openapi_context' => [
+                'summary' => 'User registration',
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                "email" => "string",
+                                "roles" => ["string"],
+                                "password" => "string",
+                                "firstname" => "string",
+                                "lastname" => "string",
+                                "username" => "string",
+                                "type" => "string",
+                                "sex" => "string",
+                                "viewers" => ["string"],
+                                "streamers" => ["string"],
+                                "dateOfBirthday" => "2022-03-16T18:03:09.730Z",
+                                "urlProfileImg" => "string",
+                                "phoneNumber" => "string",
+                                "file" => "file",
+                                'example' => [
+                                    "email" => "string",
+                                    "roles" => ["string"],
+                                    "password" => "string",
+                                    "firstname" => "string",
+                                    "lastname" => "string",
+                                    "username" => "string",
+                                    "type" => "string",
+                                    "sex" => "string",
+                                    "viewers" => ["string"],
+                                    "streamers" => ["string"],
+                                    "dateOfBirthday" => "2022-03-16T18:03:09.730Z",
+                                    "urlProfileImg" => "string",
+                                    "phoneNumber" => "string",
+                                    "file" => "file",
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'email',
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'roles',
+                        'schema' => [
+                            'type' => 'list'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'password',
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'firstname',
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'lastname',
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'username',
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'sex',
+                        'schema' => [
+                            'type' => 'integer'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'viewers',
+                        'schema' => [
+                            'type' => 'list'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'streamers',
+                        'schema' => [
+                            'type' => 'list'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'dateOfBirthday',
+                        'schema' => [
+                            'type' => 'date'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'urlProfileImg',
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'phoneNumber',
+                        'schema' => [
+                            'type' => 'String'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'file',
+                        'schema' => [
+                            'type' => 'file'
+                        ],
+                    ],
+                ],
+            ]
+        ]
+    ]
+)]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
+
     private $username;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $date_of_birthday;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $url_profile_img;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $phone_number;
 
@@ -94,13 +262,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="simple_array", nullable=true)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $viewers = [];
 
     /**
      * @ORM\Column(type="simple_array", nullable=true)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $streamers = [];
 

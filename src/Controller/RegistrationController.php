@@ -16,10 +16,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
-    /**
-     * @Route("/register", name="app_register")
-     */
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+
+    public function __invoke(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -33,7 +31,19 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            $picture = $form->get('picture')->getData();
+            if ($picture) {
+                $fichier = md5(uniqid()) . '.' . $picture->guessExtension();
 
+                $picture->move(
+                    $this->getParameter('pictures_directory'),
+                    $fichier
+                );
+            } else {
+                $fichier = 'default-picture.png';
+            }
+
+            $user->setUrlProfileImg($fichier);
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email

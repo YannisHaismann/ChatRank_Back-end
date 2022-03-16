@@ -19,13 +19,13 @@ class Sex
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups ("user:read)
+     * @Groups ("user:read")
      */
     private $name;
 
