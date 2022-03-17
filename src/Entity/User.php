@@ -2,20 +2,25 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\RegistrationController;
 use App\Controller\UserByUsernameController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @Vich\Uploadable()
  */
 
 #[ApiResource(
@@ -43,6 +48,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'register' => [
             'method' => 'POST',
             'path' => '/users/register',
+            'deserialize' => false,
             'controller' => RegistrationController::class,
             'openapi_context' => [
                 'summary' => 'User registration',
@@ -56,14 +62,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                 "firstname" => "string",
                                 "lastname" => "string",
                                 "username" => "string",
-                                "type" => "string",
-                                "sex" => "string",
+                                "type" => "/apip/types/2",
+                                "sex" => "/apip/sexes/2",
                                 "viewers" => ["string"],
                                 "streamers" => ["string"],
                                 "dateOfBirthday" => "2022-03-16T18:03:09.730Z",
-                                "urlProfileImg" => "string",
                                 "phoneNumber" => "string",
-                                "file" => "file",
+                                "file" => "string",
                                 'example' => [
                                     "email" => "string",
                                     "roles" => ["string"],
@@ -71,14 +76,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
                                     "firstname" => "string",
                                     "lastname" => "string",
                                     "username" => "string",
-                                    "type" => "string",
-                                    "sex" => "string",
+                                    "type" => "2",
+                                    "sex" => "2",
                                     "viewers" => ["string"],
                                     "streamers" => ["string"],
                                     "dateOfBirthday" => "2022-03-16T18:03:09.730Z",
-                                    "urlProfileImg" => "string",
                                     "phoneNumber" => "string",
-                                    "file" => "file",
+                                    "file" => "string",
                                 ]
                             ]
                         ]
@@ -129,9 +133,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ],
                     [
                         'in' => 'query',
+                        'name' => 'type',
+                        'schema' => [
+                            'type' => 'type'
+                        ],
+                    ],
+                    [
+                        'in' => 'query',
                         'name' => 'sex',
                         'schema' => [
-                            'type' => 'integer'
+                            'type' => 'sex'
                         ],
                     ],
                     [
@@ -157,13 +168,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ],
                     [
                         'in' => 'query',
-                        'name' => 'urlProfileImg',
-                        'schema' => [
-                            'type' => 'string'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
                         'name' => 'phoneNumber',
                         'schema' => [
                             'type' => 'String'
@@ -177,12 +181,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
                         ],
                     ],
                 ],
-            ]
-        ]
+            ],
+        ],
     ]
 )]
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
 {
     /**
      * @ORM\Id
@@ -237,10 +241,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $date_of_birthday;
 
     /**
+     * @var File|null
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="url_profile_img")
+     */
+    private $file;
+
+    /**
+     * @var string|null
+     * @Groups ("user:read")
+     */
+    private ?string $fileUrl;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups ("user:read")
      */
-    private $url_profile_img;
+    private ?string $url_profile_img;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -474,5 +490,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->streamers = $streamers;
 
         return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param File|null $file
+     * @return User
+     */
+    public function setFile(?File $file): User
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFileUrl(): ?string
+    {
+        return $this->fileUrl;
+    }
+
+    /**
+     * @param string|null $fileUrl
+     * @return User
+     */
+    public function setFileUrl(?string $fileUrl): User
+    {
+        $this->fileUrl = $fileUrl;
+        return $this;
+    }
+
+    public function serialize()
+    {
+        // TODO: Implement serialize() method.
+    }
+
+    public function unserialize(string $data)
+    {
+        // TODO: Implement unserialize() method.
     }
 }
