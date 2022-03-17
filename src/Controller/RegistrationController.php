@@ -3,60 +3,63 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Repository\SexRepository;
+use App\Repository\TypeRepository;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 class RegistrationController extends AbstractController
 {
 
-    public function __invoke(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    /**
+     * @throws \Exception
+     */
+    public function __invoke(Request                    $request, UserPasswordHasherInterface $userPasswordHasher,
+                             UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator,
+                             EntityManagerInterface     $entityManager, TypeRepository $typeRepository, SexRepository $sexRepository): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
+        $user->setPassword(
             $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-            $picture = $form->get('picture')->getData();
-            if ($picture) {
-                $fichier = md5(uniqid()) . '.' . $picture->guessExtension();
-
-                $picture->move(
-                    $this->getParameter('pictures_directory'),
-                    $fichier
-                );
-            } else {
-                $fichier = 'default-picture.png';
-            }
-
-            $user->setUrlProfileImg($fichier);
-            $entityManager->persist($user);
-            $entityManager->flush();
-            // do anything else you need here, like send an email
-
-            return $userAuthenticator->authenticateUser(
                 $user,
-                $authenticator,
-                $request
-            );
+                $request->get('password')
+            )
+        );
+
+        $picture = $request->files->get('file');
+        if ($picture != null) {
+            $user->setFile($request->files->get('file'));
+        } else {
+            $fichier = 'default-profile-picture.jpg';
+            $user->setUrlProfileImg($fichier);
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
-        ]);
+        $user->setEmail($request->get('email'));
+        $user->setFirstname($request->get('firstname'));
+        $user->setLastname($request->get('lastname'));
+        $user->setUsername($request->get('username'));
+        $type = $typeRepository->find((int)$request->get('type'));
+        $user->setType($type);
+        $sex = $sexRepository->find((int)$request->get('sex'));
+        $user->setSex($sex);
+        $date = new \DateTime($request->get('dateOfBirthday'));
+        $user->setDateOfBirthday($date);
+        $user->setPhoneNumber($request->get('phoneNumber'));
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $userAuthenticator->authenticateUser(
+            $user,
+            $authenticator,
+            $request
+        );
     }
 }
