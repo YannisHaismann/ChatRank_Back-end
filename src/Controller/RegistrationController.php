@@ -49,10 +49,11 @@ class RegistrationController extends AbstractController
         $user->setType($type);
         $sex = $sexRepository->find((int)$request->get('sex'));
         $user->setSex($sex);
-        $date = new \DateTime($request->get('dateOfBirthday'));
-        $user->setDateOfBirthday($date);
+        $dateBirthday = new \DateTime($request->get('dateOfBirthday'));
+        $user->setDateOfBirthday($dateBirthday);
         $user->setPhoneNumber($request->get('phoneNumber'));
-
+        $dateUpdate = new \DateTime('now');
+        $user->setDateOfUpdate($dateUpdate);
         $entityManager->persist($user);
         $entityManager->flush();
 

@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -60,6 +61,42 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function listViewersWithFilters(String $id, ?String $username, ?String $date, ?String $type){
+
+       $queryBuilder  = $this->createQueryBuilder('u');
+       $queryBuilder
+           ->select("u.viewers")
+           ->andWhere("u.id = :id")
+           ->setParameter("id", intval($id));
+
+
+           if($username != 'null'){
+               $queryBuilder->orderBy('u.username', $username);
+           }
+           if($date != 'null'){
+               $queryBuilder->orderBy('u.date_of_update', $date);
+           }
+           if($type != 'null'){
+               $queryBuilder->orderBy('u.type', $type);
+           }
+       return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function listStreamersWithFilters(String $id, ?String $username){
+
+        $queryBuilder  = $this->createQueryBuilder('u');
+        $queryBuilder
+            ->select("u.streamers")
+            ->andWhere("u.id = :id")
+            ->setParameter("id", intval($id));
+
+
+        if($username != 'null'){
+            $queryBuilder->orderBy('u.username', $username);
+        }
+        return $queryBuilder->getQuery()->getResult();
     }
 
     // /**
