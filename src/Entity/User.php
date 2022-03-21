@@ -110,13 +110,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'DELETE',
         'PATCH',
         'add streamer' => [
-            'method' => 'PATCH',
-            'path' => '/users/streamers/{id}/{id_streamer}',
+            'method' => 'POST',
+            'path' => '/users/streamer/{id}/{id_streamer}',
             'controller' => UpdateListOfStreamersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
             'openapi_context' => [
-                'summary' => 'Add and remove a streamers in the list of viewers for a user',
+                'summary' => 'Add and remove a streamers in the list of streamers for a user',
             ],
         ],
     ]
