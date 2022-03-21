@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\ListOfStreamersUser;
+use App\Controller\ListOfViewersUser;
 use App\Controller\RegistrationController;
+use App\Controller\UpdateListOfStreamersUser;
 use App\Controller\UserByUsernameController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,25 +29,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'by username' => [
-            'method' => 'GET',
-            'path' => '/users/find',
-            'controller' => UserByUsernameController::class,
-            'filters' => [],
-            'pagination_enabled' => false,
-            'openapi_context' => [
-                'summary' => 'Find user by username',
-                'parameters' => [
-                    [
-                        'in' => 'query',
-                        'name' => 'username',
-                        'schema' => [
-                            'type' => 'string'
-                        ]
-                    ]
-                ]
-            ]
-        ],
         'register' => [
             'method' => 'POST',
             'path' => '/users/register',
@@ -64,8 +48,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                 "username" => "string",
                                 "type" => "/apip/types/2",
                                 "sex" => "/apip/sexes/2",
-                                "viewers" => ["string"],
-                                "streamers" => ["string"],
                                 "dateOfBirthday" => "2022-03-16T18:03:09.730Z",
                                 "phoneNumber" => "string",
                                 "file" => "string",
@@ -78,8 +60,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                                     "username" => "string",
                                     "type" => "2",
                                     "sex" => "2",
-                                    "viewers" => ["string"],
-                                    "streamers" => ["string"],
                                     "dateOfBirthday" => "2022-03-16T18:03:09.730Z",
                                     "phoneNumber" => "string",
                                     "file" => "string",
@@ -88,99 +68,54 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                         ]
                     ]
                 ],
-                'parameters' => [
-                    [
-                        'in' => 'query',
-                        'name' => 'email',
-                        'schema' => [
-                            'type' => 'string'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'roles',
-                        'schema' => [
-                            'type' => 'list'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'password',
-                        'schema' => [
-                            'type' => 'string'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'firstname',
-                        'schema' => [
-                            'type' => 'string'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'lastname',
-                        'schema' => [
-                            'type' => 'string'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'username',
-                        'schema' => [
-                            'type' => 'string'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'type',
-                        'schema' => [
-                            'type' => 'type'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'sex',
-                        'schema' => [
-                            'type' => 'sex'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'viewers',
-                        'schema' => [
-                            'type' => 'list'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'streamers',
-                        'schema' => [
-                            'type' => 'list'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'dateOfBirthday',
-                        'schema' => [
-                            'type' => 'date'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'phoneNumber',
-                        'schema' => [
-                            'type' => 'String'
-                        ],
-                    ],
-                    [
-                        'in' => 'query',
-                        'name' => 'file',
-                        'schema' => [
-                            'type' => 'file'
-                        ],
-                    ],
-                ],
+            ],
+        ],
+    ],
+    itemOperations: [
+        'GET',
+        'by username' => [
+            'method' => 'GET',
+            'path' => '/users/find/{username}',
+            'controller' => UserByUsernameController::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Find user by username',
+            ]
+        ],
+        'list viewers user' => [
+            'method' => 'GET',
+            'path' => '/users/viewers/{id}/{username}/{date}/{type}',
+            'controller' => ListOfViewersUser::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Returns the list of viewers for a user',
+
+            ]
+        ],
+        'list streamers user' => [
+            'method' => 'GET',
+            'path' => '/users/streamers/{id}/{username}',
+            'controller' => ListOfStreamersUser::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Returns the list of streamers for a user',
+
+            ]
+        ],
+        'PUT',
+        'DELETE',
+        'PATCH',
+        'add streamer' => [
+            'method' => 'PATCH',
+            'path' => '/users/streamers/{id_user}/{id_streamer}',
+            'controller' => UpdateListOfStreamersUser::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Add and remove a streamers in the list of viewers for a user',
             ],
         ],
     ]
@@ -288,6 +223,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      */
     private $streamers = [];
 
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups ("user:read")
+     */
+    private $date_of_update;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -320,7 +261,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string) $this->username;
     }
 
     /**
@@ -492,6 +433,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
+    public function getDateOfUpdate() : ?\DateTimeInterface
+    {
+        return $this->date_of_update;
+    }
+
+
+    public function setDateOfUpdate(\DateTimeInterface $date_of_update): self
+    {
+        $this->date_of_update = $date_of_update;
+
+        return $this;
+    }
+
     /**
      * @return File|null
      */
@@ -537,4 +491,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     {
         // TODO: Implement unserialize() method.
     }
+
 }
