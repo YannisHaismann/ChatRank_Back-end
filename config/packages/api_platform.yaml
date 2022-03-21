@@ -8,5 +8,10 @@ api_platform:
         multipart: ['multipart/form-data']
     patch_formats:
         json: ['application/merge-patch+json']
+        jsonapi: ['application/vnd.api+json']
     swagger:
         versions: [3]
+    error_formats:
+        jsonproblem: [ 'application/problem+json' ]
+        jsonld: [ 'application/ld+json' ]      # Hydra error formats
+        jsonapi: [ 'application/vnd.api+json' ]
