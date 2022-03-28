@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ListOfStreamersUser;
 use App\Controller\ListOfViewersUser;
@@ -29,6 +30,16 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ApiResource(
     collectionOperations: [
         'get',
+        'by username' => [
+            'method' => 'GET',
+            'path' => '/users/find/{username}',
+            'controller' => UserByUsernameController::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Find user by username',
+            ]
+        ],
         'register' => [
             'method' => 'POST',
             'path' => '/users/register',
@@ -72,17 +83,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ],
     ],
     itemOperations: [
-        'GET',
-        'by username' => [
-            'method' => 'GET',
-            'path' => '/users/find/{username}',
-            'controller' => UserByUsernameController::class,
-            'filters' => [],
-            'pagination_enabled' => false,
-            'openapi_context' => [
-                'summary' => 'Find user by username',
-            ]
-        ],
+        'get',
         'list viewers user' => [
             'method' => 'GET',
             'path' => '/users/viewers/{id}/{username}/{date}/{type}',
@@ -96,7 +97,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ],
         'list streamers user' => [
             'method' => 'GET',
-            'path' => '/users/streamers/{id}/{username}',
+            'path' => '/users/streamers/list/{id}/{username}',
             'controller' => ListOfStreamersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
@@ -109,13 +110,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'DELETE',
         'PATCH',
         'add streamer' => [
-            'method' => 'PATCH',
-            'path' => '/users/streamers/{id_user}/{id_streamer}',
+            'method' => 'POST',
+            'path' => '/users/streamer/{id}/{id_streamer}',
             'controller' => UpdateListOfStreamersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
             'openapi_context' => [
-                'summary' => 'Add and remove a streamers in the list of viewers for a user',
+                'summary' => 'Add and remove a streamers in the list of streamers for a user',
             ],
         ],
     ]
