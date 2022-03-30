@@ -3,34 +3,38 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/login", name="app_login")
-     */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    #[Route(path: "/apip/login", name: 'api_login', methods: ['POST'])]
+    public function login()
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        $user = $this->getUser();
+        return $this->json([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'password' => $user->getPassword(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'username' => $user->getUsername(),
+            "date_of_birthday" => $user->getDateOfBirthday(),
+            "url_profile_img" => $user->getUrlProfileImg(),
+            "phone_number" => $user->getPhoneNumber(),
+            "type" => $user->getType()->getName(),
+            "sex" => $user->getSex()->getName(),
+            "viewers" => $user->getViewers(),
+            "streamers" => $user->getStreamers(),
+            "date_of_update" => $user->getDateOfUpdate(),
+        ]);
 
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
-    /**
-     * @Route("/logout", name="app_logout")
-     */
-    public function logout(): void
+    #[Route(path: "apip/logout", name: 'api_logout', methods: ['POST'])]
+    public function logout()
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+
     }
 }

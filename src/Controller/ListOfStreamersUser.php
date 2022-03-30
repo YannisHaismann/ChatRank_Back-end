@@ -12,14 +12,25 @@ class ListOfStreamersUser extends AbstractController
     public function __invoke(Request $request, UserRepository $userRepository)
     {
         $id = $request->get('id');
-        $username = $request->get('username');
+        $username = $request->get('filter');
 
-        $list = $userRepository->listStreamersWithFilters($id, $username);
+        $user = $userRepository->find(intval($id));
+        $list = $user->getStreamers();
         $listViewers = [];
 
-        for($i = 0; $i < count($list[0]['streamers']); $i++){
-            $user = $userRepository->find($list[0]['streamers'][$i]);
-            $listViewers[] += $user;
+        for($i = 0; $i < count($list); $i++){
+            $user = $userRepository->find($list[$i]);
+            $listViewers [] = $user;
+        }
+
+        if($username == 'usernameDesc'){
+            usort($listViewers, function($a, $b) {
+                return $a->getUsername() <=> $b->getUsername();
+            });
+        }elseif($username == 'usernameAsc'){
+            usort($listViewers, function($a, $b) {
+                return $b->getUsername() <=> $a->getUsername();
+            });
         }
         return $listViewers;
     }

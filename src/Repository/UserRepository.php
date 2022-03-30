@@ -7,7 +7,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -63,58 +62,25 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function listViewersWithFilters(String $id, ?String $username, ?String $date, ?String $type){
-
-       $queryBuilder  = $this->createQueryBuilder('u');
-       $queryBuilder
-           ->select("u.viewers")
-           ->andWhere("u.id = :id")
-           ->setParameter("id", intval($id));
-
-
-           if($username != 'null'){
-               $queryBuilder->orderBy('u.username', $username);
-           }
-           if($date != 'null'){
-               $queryBuilder->orderBy('u.date_of_update', $date);
-           }
-           if($type != 'null'){
-               $queryBuilder->orderBy('u.type', $type);
-           }
-       return $queryBuilder->getQuery()->getResult();
-    }
-
-    public function listStreamersWithFilters(String $id, ?String $username){
-
-        $queryBuilder  = $this->createQueryBuilder('u');
-        $queryBuilder
-            ->select("u.streamers")
-            ->andWhere("u.id = :id")
-            ->setParameter("id", intval($id));
-
-
-        if($username != 'null'){
-            $queryBuilder->orderBy('u.username', $username);
-        }
-        return $queryBuilder->getQuery()->getResult();
-    }
-
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findAllUsersStreamer(string $username)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $queryBuilder = $this->createQueryBuilder('u');
+        $queryBuilder
+            ->leftJoin('u.type', 't')->addSelect('t')
+            ->andWhere('t.id = 2');
+
+            if($username != 'null'){
+                $queryBuilder->andWhere('u.username LIKE :username')
+                    ->setParameter('username', $username.'%');
+            }
+
+            return $queryBuilder->getQuery()->getResult();
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?User

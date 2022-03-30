@@ -47,6 +47,13 @@ class RegistrationController extends AbstractController
         $user->setUsername($request->get('username'));
         $type = $typeRepository->find((int)$request->get('type'));
         $user->setType($type);
+
+        if($type == 1){
+            $user->setRoles(["ROLE_VIEWER"]);
+        }else{
+            $user->setRoles(["ROLE_STREAMER"]);
+        }
+
         $sex = $sexRepository->find((int)$request->get('sex'));
         $user->setSex($sex);
         $dateBirthday = new \DateTime($request->get('dateOfBirthday'));
