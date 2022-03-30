@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,60 +16,60 @@ class UpdateListOfStreamersUser extends AbstractController
         $a_ajouter = true;
 
         $user = $userRepository->find(intval($id_user));
-        $list = $userRepository->listStreamersWithFilters($id_user, 'null');
+        $list = $user->getStreamers();
 
-        if(count($list[0]['streamers']) >= 0) {
-            for ($i = 0; $i < count($list[0]['streamers']); $i++) {
-                if ($list[0]['streamers'][$i] == $id_streamer) {
-                    unset($list[0]['streamers'][$i]);
+        if(count($list) >= 0) {
+            for ($i = 0; $i < count($list); $i++) {
+                if ($list[$i] == $id_streamer) {
+                    unset($list[$i]);
                     $a_ajouter = false;
                     $entityManager = $this->getDoctrine()->getManager();
-                    $user->setStreamers($list[0]['streamers']);
+                    $user->setStreamers($list);
                     $entityManager->persist($user);
                     $entityManager->flush();
                 }
             }
         }else {
-            $list[0]['streamers'][] = $id_streamer;
+            $list[] = $id_streamer;
             $entityManager = $this->getDoctrine()->getManager();
-            $user->setStreamers($list[0]['streamers']);
+            $user->setStreamers($list);
             $entityManager->persist($user);
             $entityManager->flush();
         }
         if ($a_ajouter == true) {
-            $list[0]['streamers'][] = $id_streamer;
+            $list[] = $id_streamer;
             $entityManager = $this->getDoctrine()->getManager();
-            $user->setStreamers($list[0]['streamers']);
+            $user->setStreamers($list);
             $entityManager->persist($user);
             $entityManager->flush();
         }
 
         $streamer = $userRepository->find(intval($id_streamer));
-        $list1 = $userRepository->listViewersWithFilters($id_streamer, 'null', 'null', 'null');
+        $list1 = $streamer->getViewers();
         $a_ajouter = true;
 
-        if(count($list1[0]['viewers']) >= 0) {
-            for ($i = 0; $i < count($list1[0]['viewers']); $i++) {
-                if ($list1[0]['viewers'][$i] == $id_user) {
-                    unset($list1[0]['viewers'][$i]);
+        if(count($list1) >= 0) {
+            for ($i = 0; $i < count($list1); $i++) {
+                if ($list1[$i] == $id_user) {
+                    unset($list1[$i]);
                     $a_ajouter = false;
                     $entityManager = $this->getDoctrine()->getManager();
-                    $streamer->setViewers($list1[0]['viewers']);
+                    $streamer->setViewers($list1);
                     $entityManager->persist($streamer);
                     $entityManager->flush();
                 }
             }
         }else{
-            $list1[0]['viewers'][] = $id_user;
+            $list1[] = $id_user;
             $entityManager = $this->getDoctrine()->getManager();
-            $streamer->setViewers($list1[0]['viewers']);
+            $streamer->setViewers($list1);
             $entityManager->persist($streamer);
             $entityManager->flush();
         }
         if($a_ajouter == true) {
-            $list1[0]['viewers'][] = $id_user;
+            $list1[] = $id_user;
             $entityManager = $this->getDoctrine()->getManager();
-            $streamer->setViewers($list1[0]['viewers']);
+            $streamer->setViewers($list1);
             $entityManager->persist($streamer);
             $entityManager->flush();
         }

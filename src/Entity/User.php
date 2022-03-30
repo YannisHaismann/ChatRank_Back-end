@@ -2,23 +2,20 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\ListOfStreamersUser;
+use App\Controller\FindUsersStreamerController;
+use App\Controller\CountOfViewersUser;
 use App\Controller\ListOfViewersUser;
 use App\Controller\RegistrationController;
 use App\Controller\UpdateListOfStreamersUser;
 use App\Controller\UserByUsernameController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\Ignore;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -38,6 +35,16 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'pagination_enabled' => false,
             'openapi_context' => [
                 'summary' => 'Find user by username',
+            ]
+        ],
+        'by type streamer' => [
+            'method' => 'GET',
+            'path' => '/users/find/users/streamer/{filter}',
+            'controller' => FindUsersStreamerController::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Find users streamer',
             ]
         ],
         'register' => [
@@ -86,7 +93,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'get',
         'list viewers user' => [
             'method' => 'GET',
-            'path' => '/users/viewers/{id}/{username}/{date}/{type}',
+            'path' => '/users/viewers/list/{id}/{filter}',
             'controller' => ListOfViewersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
@@ -97,12 +104,34 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ],
         'list streamers user' => [
             'method' => 'GET',
-            'path' => '/users/streamers/list/{id}/{username}',
-            'controller' => ListOfStreamersUser::class,
+            'path' => '/users/streamers/list/{id}/{filter}',
+            'controller' => CountOfViewersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
             'openapi_context' => [
                 'summary' => 'Returns the list of streamers for a user',
+
+            ]
+        ],
+        'count streamers' => [
+            'method' => 'GET',
+            'path' => '/users/streamers/count/{id}',
+            'controller' => CountOfViewersUser::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Returns the count of streamers for a user',
+
+            ]
+        ],
+        'count viewers' => [
+            'method' => 'GET',
+            'path' => '/users/viewers/count/{id}',
+            'controller' => CountOfViewersUser::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Returns the count of viewers for a user',
 
             ]
         ],
@@ -119,7 +148,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 'summary' => 'Add and remove a streamers in the list of streamers for a user',
             ],
         ],
-    ]
+    ],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
