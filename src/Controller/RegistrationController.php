@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\SexRepository;
 use App\Repository\TypeRepository;
+use App\Repository\UserRepository;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,9 +21,9 @@ class RegistrationController extends AbstractController
     /**
      * @throws \Exception
      */
-    public function __invoke(Request                    $request, UserPasswordHasherInterface $userPasswordHasher,
-                             UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator,
-                             EntityManagerInterface     $entityManager, TypeRepository $typeRepository, SexRepository $sexRepository): Response
+    public function __invoke(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator,
+                             AppAuthenticator $authenticator, EntityManagerInterface $entityManager, TypeRepository $typeRepository, SexRepository $sexRepository,
+                             UserRepository $userRepository ): Response
     {
         $user = new User();
 
@@ -41,14 +42,29 @@ class RegistrationController extends AbstractController
             $user->setUrlProfileImg($fichier);
         }
 
-        $user->setEmail($request->get('email'));
+        $email = $request->get('email');
+        $checkEmail = $userRepository->findOneBy(["email" => $email]);
+        if($checkEmail == null){
+            $user->setEmail($email);
+        }else{
+            return new Response(content: 'invalid email');
+        }
+
         $user->setFirstname($request->get('firstname'));
         $user->setLastname($request->get('lastname'));
-        $user->setUsername($request->get('username'));
+
+        $username = $request->get('username');
+        $checkUsername = $userRepository->findOneBy(["username" => $username]);
+        if($checkUsername == null){
+            $user->setUsername($username);
+        }else{
+            return new Response(content: 'invalid username');
+        }
+
         $type = $typeRepository->find((int)$request->get('type'));
         $user->setType($type);
 
-        if($type == 1){
+        if((int)$request->get('type') == 1){
             $user->setRoles(["ROLE_VIEWER"]);
         }else{
             $user->setRoles(["ROLE_STREAMER"]);
