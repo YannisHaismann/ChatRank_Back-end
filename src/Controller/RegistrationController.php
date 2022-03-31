@@ -74,7 +74,15 @@ class RegistrationController extends AbstractController
         $user->setSex($sex);
         $dateBirthday = new \DateTime($request->get('dateOfBirthday'));
         $user->setDateOfBirthday($dateBirthday);
-        $user->setPhoneNumber($request->get('phoneNumber'));
+
+        $phoneNumber = $request->get('phoneNumber');
+        $checkPhoneNumber = $userRepository->findOneBy(["phone_number" => $phoneNumber]);
+        if($checkPhoneNumber == null){
+            $user->setPhoneNumber($phoneNumber);
+        }else{
+            return new Response(content: 'invalid phoneNumber');
+        }
+
         $dateUpdate = new \DateTime('now');
         $user->setDateOfUpdate($dateUpdate);
         $entityManager->persist($user);
