@@ -49,7 +49,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('base.html.twig'));
+        return new Response(content: 'true');
     }
 
     protected function getLoginUrl(Request $request): string
