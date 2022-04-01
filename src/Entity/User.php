@@ -33,6 +33,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => UserByUsernameController::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Find user by username',
             ]
@@ -43,6 +46,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => FindUsersStreamerController::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Find users streamer',
             ]
@@ -97,6 +103,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => ListOfViewersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Returns the list of viewers for a user',
 
@@ -108,6 +117,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => CountOfViewersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Returns the list of streamers for a user',
 
@@ -148,6 +160,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 'summary' => 'Add and remove a streamers in the list of streamers for a user',
             ],
         ],
+    ],
+    normalizationContext: [
+        'groups' => ['user:read'],
     ],
 )]
 
@@ -232,12 +247,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     /**
      * @ORM\ManyToOne(targetEntity=Type::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups ("user:read")
      */
     private $type;
 
     /**
      * @ORM\ManyToOne(targetEntity=Sex::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups ("user:read")
      */
     private $sex;
 
