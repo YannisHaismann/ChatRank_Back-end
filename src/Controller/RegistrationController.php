@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use function PHPUnit\Framework\isEmpty;
 
 
 class RegistrationController extends AbstractController
@@ -27,13 +28,18 @@ class RegistrationController extends AbstractController
                              UserRepository $userRepository ): Response
     {
         $user = new User();
+        $errorList = [];
 
-        $user->setPassword(
-            $userPasswordHasher->hashPassword(
-                $user,
-                $request->get('password')
-            )
-        );
+        if($request->get('password') != null) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $request->get('password')
+                )
+            );
+        }else {
+            $errorList [] = "error password cannot be null";
+        }
 
         $picture = $request->files->get('file');
         if ($picture != null) {
@@ -43,50 +49,85 @@ class RegistrationController extends AbstractController
             $user->setUrlProfileImg($fichier);
         }
 
-        $email = $request->get('email');
-        $checkEmail = $userRepository->findOneBy(["email" => $email]);
-        if($checkEmail == null){
-            $user->setEmail($email);
-        }else{
-            return new JsonResponse(['error' => 'invalid email']);
-        }
-
-        $user->setFirstname($request->get('firstname'));
-        $user->setLastname($request->get('lastname'));
-
-        $username = $request->get('username');
-        $checkUsername = $userRepository->findOneBy(["username" => $username]);
-        if($checkUsername == null){
-            $user->setUsername($username);
-        }else{
-            return new JsonResponse(['error' => 'invalid username']);
-        }
-
-        $type = $typeRepository->find((int)$request->get('type'));
-        $user->setType($type);
-
-        if((int)$request->get('type') == 1){
-            $user->setRoles(["ROLE_VIEWER"]);
-        }else{
-            $user->setRoles(["ROLE_STREAMER"]);
-        }
-
-        $sex = $sexRepository->find((int)$request->get('sex'));
-        $user->setSex($sex);
-        $dateBirthday = new \DateTime($request->get('dateOfBirthday'));
-        $user->setDateOfBirthday($dateBirthday);
-
         $phoneNumber = $request->get('phoneNumber');
         if($phoneNumber != null) {
             $checkPhoneNumber = $userRepository->findOneBy(["phone_number" => $phoneNumber]);
             if ($checkPhoneNumber == null) {
                 $user->setPhoneNumber($phoneNumber);
             } else {
-                return new JsonResponse(['error' => 'invalid phoneNumber']);
+                $errorList [] = 'existing phone number error';
             }
         }
 
+        if($request->get('email') != null){
+            $email = $request->get('email');
+            $checkEmail = $userRepository->findOneBy(["email" => $email]);
+            if($checkEmail == null){
+                $user->setEmail($email);
+            }else{
+                $errorList [] = 'existing email error';
+            }
+        }else{
+            $errorList [] = "error email cannot be null";
+        }
+
+        if($request->get('firstname') != null){
+            $user->setFirstname($request->get('firstname'));
+        }else{
+            $errorList [] = "error firstname cannot be null";
+        }
+
+        if($request->get('lastname') != null){
+            $user->setLastname($request->get('lastname'));
+        }else{
+            $errorList [] = "error lastname cannot be null";
+        }
+
+        if($request->get('username') != null){
+            $username = $request->get('username');
+            $checkUsername = $userRepository->findOneBy(["username" => $username]);
+            if($checkUsername == null){
+                $user->setUsername($username);
+            }else{
+                $errorList [] = 'existing username error';
+            }
+        }else{
+            $errorList [] = "error username cannot be null";
+        }
+
+        $type = $request->get('type');
+        if($type != null) {
+            $type = $typeRepository->find((int)$request->get('type'));
+            $user->setType($type);
+            if($type->getId() == 1){
+                $user->setRoles(["ROLE_VIEWER"]);
+            }else{
+                $user->setRoles(["ROLE_STREAMER"]);
+            }
+        } else {
+            $errorList [] = "error type cannot be null";
+        }
+
+        if($request->get('sex') != null){
+            $sex = $sexRepository->find((int)$request->get('sex'));
+            $user->setSex($sex);
+        }else{
+            $errorList [] = "error sex cannot be null";
+        }
+
+        if($request->get('dateOfBirthday') != null){
+            $dateBirthday = new \DateTime($request->get('dateOfBirthday'));
+            $user->setDateOfBirthday($dateBirthday);
+        }else{
+            $errorList [] = "error dateOfBirthday cannot be null";
+        }
+
         $dateUpdate = new \DateTime('now');
+
+        if($errorList != null){
+            return new JsonResponse($errorList);
+        }
+
         $user->setDateOfUpdate($dateUpdate);
         $entityManager->persist($user);
         $entityManager->flush();
