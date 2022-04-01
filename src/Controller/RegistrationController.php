@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -47,7 +48,7 @@ class RegistrationController extends AbstractController
         if($checkEmail == null){
             $user->setEmail($email);
         }else{
-            return new Response(content: 'invalid email');
+            return new JsonResponse(['error' => 'invalid email']);
         }
 
         $user->setFirstname($request->get('firstname'));
@@ -58,7 +59,7 @@ class RegistrationController extends AbstractController
         if($checkUsername == null){
             $user->setUsername($username);
         }else{
-            return new Response(content: 'invalid username');
+            return new JsonResponse(['error' => 'invalid username']);
         }
 
         $type = $typeRepository->find((int)$request->get('type'));
@@ -76,11 +77,13 @@ class RegistrationController extends AbstractController
         $user->setDateOfBirthday($dateBirthday);
 
         $phoneNumber = $request->get('phoneNumber');
-        $checkPhoneNumber = $userRepository->findOneBy(["phone_number" => $phoneNumber]);
-        if($checkPhoneNumber == null){
-            $user->setPhoneNumber($phoneNumber);
-        }else{
-            return new Response(content: 'invalid phoneNumber');
+        if($phoneNumber != null) {
+            $checkPhoneNumber = $userRepository->findOneBy(["phone_number" => $phoneNumber]);
+            if ($checkPhoneNumber == null) {
+                $user->setPhoneNumber($phoneNumber);
+            } else {
+                return new JsonResponse(['error' => 'invalid phoneNumber']);
+            }
         }
 
         $dateUpdate = new \DateTime('now');
