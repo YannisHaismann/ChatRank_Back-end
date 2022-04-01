@@ -29,7 +29,6 @@ class SecurityController extends AbstractController
             "streamers" => $user->getStreamers(),
             "date_of_update" => $user->getDateOfUpdate(),
         ]);
-
     }
 
     #[Route(path: "apip/logout", name: 'api_logout', methods: ['POST'])]
