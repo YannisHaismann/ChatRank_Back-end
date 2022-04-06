@@ -276,6 +276,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      */
     private $date_of_update;
 
+    /**
+     * @ORM\OneToOne(targetEntity=LeagueOfLegend::class, mappedBy="user", cascade={"persist", "remove"})
+     * @Groups ("user:read")
+     */
+    private $leagueOfLegend;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -537,6 +543,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function unserialize(string $data)
     {
         // TODO: Implement unserialize() method.
+    }
+
+    public function getLeagueOfLegend(): ?LeagueOfLegend
+    {
+        return $this->leagueOfLegend;
+    }
+
+    public function setLeagueOfLegend(LeagueOfLegend $leagueOfLegend): self
+    {
+        // set the owning side of the relation if necessary
+        if ($leagueOfLegend->getUser() !== $this) {
+            $leagueOfLegend->setUser($this);
+        }
+
+        $this->leagueOfLegend = $leagueOfLegend;
+
+        return $this;
     }
 
 }
