@@ -14,8 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use function PHPUnit\Framework\equalTo;
-use function PHPUnit\Framework\isEmpty;
 
 
 class RegistrationController extends AbstractController
@@ -84,38 +82,38 @@ class RegistrationController extends AbstractController
 
         $phone_to_check = str_replace ( "-" , "" , $filtered_phone_number ) ;
 
-        if ( strlen ( $phone_to_check ) < 10 || strlen ( $phone_to_check ) > 14 ) {
+        if( strlen ( $phone_to_check ) < 10 || strlen ( $phone_to_check ) > 14 ){
             return false ;
-        } else{
+        }else{
             return true ;
         }
     }
 
     private function verify_password($user, $userPasswordHasher, $password, &$errorList)
     {
-        if($password != null) {
+        if($password != null){
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $password
                 )
             );
-        }else {
+        }else{
             $errorList [] = "error password cannot be null";
         }
     }
 
     private function verify_phone_number($user, mixed $phoneNumber, UserRepository $userRepository, array &$errorList)
     {
-        if($phoneNumber != null) {
+        if($phoneNumber != null){
             if($this->valid_phone_number($phoneNumber) == true){
                 $checkPhoneNumber = $userRepository->findOneBy(["phone_number" => $phoneNumber]);
-                if ($checkPhoneNumber == null) {
+                if ($checkPhoneNumber == null){
                     $user->setPhoneNumber($phoneNumber);
-                } else {
+                } else{
                     $errorList [] = 'existing phone number error';
                 }
-            }else {
+            }else{
                 $errorList [] = "invalid phone number error";
             }
         }
@@ -123,9 +121,9 @@ class RegistrationController extends AbstractController
 
     private function verify_picture(mixed $picture, User $user)
     {
-        if ($picture != null) {
+        if($picture != null){
             $user->setFile($picture);
-        } else {
+        }else{
             $fichier = 'default-profile-picture.jpg';
             $user->setUrlProfileImg($fichier);
         }
@@ -183,7 +181,7 @@ class RegistrationController extends AbstractController
 
     private function verify_type(User $user, mixed $type, TypeRepository $typeRepository, $request, array $errorList)
     {
-        if($type != null) {
+        if($type != null){
             $type = $typeRepository->find((int)$request->get('type'));
             $user->setType($type);
             if($type->getId() == 1){
@@ -191,7 +189,7 @@ class RegistrationController extends AbstractController
             }else{
                 $user->setRoles(["ROLE_STREAMER"]);
             }
-        } else {
+        }else{
             $errorList [] = "error type cannot be null";
         }
     }
