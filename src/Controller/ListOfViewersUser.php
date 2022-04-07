@@ -31,7 +31,7 @@ class ListOfViewersUser extends AbstractController
                 break;
             case 'usernameDesc':
                 usort($listViewers, function($a, $b) {
-                return $a->getUsername() <=> $b->getUsername();
+                    return $a->getUsername() <=> $b->getUsername();
             });
                 break;
             case 'dateAsc':
