@@ -25,7 +25,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
             'properties' => [
                 'username' => [
                     'type' => 'string',
-                    'example' => 'pierrick02732@gmail.com',
+                    'example' => 'test@gmail.com',
                 ],
                 'password' => [
                     'type' => 'string',
