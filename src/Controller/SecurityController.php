@@ -12,6 +12,10 @@ class SecurityController extends AbstractController
     public function login()
     {
         $user = $this->getUser();
+        $lol = $user->getLeagueOfLegend();
+        if($lol != null){
+            $lol = $user->getLeagueOfLegend()->getId();
+        }
         return $this->json([
             'id' => $user->getId(),
             'email' => $user->getEmail(),
@@ -28,6 +32,7 @@ class SecurityController extends AbstractController
             "viewers" => $user->getViewers(),
             "streamers" => $user->getStreamers(),
             "date_of_update" => $user->getDateOfUpdate(),
+            "league_of_legend" => $lol
         ]);
     }
 
