@@ -1,3 +1,8 @@
+/*
+    Jeu de données
+    Le MDP de chaque utilisateur correspond à : test1234
+*/
+
 INSERT INTO `type` (`id`, `name`) VALUES (1, 'Viewer'), (2, 'Streamer');
 
 INSERT INTO `sex` (`id`, `name`) VALUES (1, 'Man'), (2, 'Woman'), (3, 'Other');

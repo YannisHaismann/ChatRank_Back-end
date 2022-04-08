@@ -1,3 +1,7 @@
+/*
+    Script qui permet la création de la BDD
+*/
+
 CREATE DATABASE `chatRank_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE `chatRank_db`;
