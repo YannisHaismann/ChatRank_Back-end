@@ -11,29 +11,7 @@ class SecurityController extends AbstractController
     #[Route(path: "/apip/login", name: 'api_login', methods: ['POST'])]
     public function login()
     {
-        $user = $this->getUser();
-        $lol = $user->getLeagueOfLegend();
-        if($lol != null){
-            $lol = $user->getLeagueOfLegend()->getId();
-        }
-        return $this->json([
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'roles' => $user->getRoles(),
-            'password' => $user->getPassword(),
-            'firstname' => $user->getFirstname(),
-            'lastname' => $user->getLastname(),
-            'username' => $user->getUsername(),
-            "date_of_birthday" => $user->getDateOfBirthday(),
-            "url_profile_img" => $user->getUrlProfileImg(),
-            "phone_number" => $user->getPhoneNumber(),
-            "type" => $user->getType()->getName(),
-            "sex" => $user->getSex()->getName(),
-            "viewers" => $user->getViewers(),
-            "streamers" => $user->getStreamers(),
-            "date_of_update" => $user->getDateOfUpdate(),
-            "league_of_legend" => $lol
-        ]);
+
     }
 
     #[Route(path: "apip/logout", name: 'api_logout', methods: ['POST'])]

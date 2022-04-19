@@ -6,11 +6,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\FindUsersStreamerController;
 use App\Controller\CountOfViewersUser;
 use App\Controller\ListOfViewersUser;
+use App\Controller\MeController;
 use App\Controller\RegistrationController;
 use App\Controller\UpdateListOfStreamersUser;
 use App\Controller\UserByUsernameController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -131,9 +133,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => CountOfViewersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Returns the count of streamers for a user',
-
             ]
         ],
         'count viewers' => [
@@ -142,6 +146,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => CountOfViewersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Returns the count of viewers for a user',
 
@@ -156,17 +163,17 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => UpdateListOfStreamersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
             'openapi_context' => [
                 'summary' => 'Add and remove a streamers in the list of streamers for a user',
             ],
         ],
     ],
-    normalizationContext: [
-        'groups' => ['user:read'],
-    ],
 )]
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
+class User implements UserInterface,\Serializable, JWTUserInterface
 {
     /**
      * @ORM\Id
@@ -236,7 +243,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups ("user:read")
      */
-    private ?string $url_profile_img;
+    private $url_profile_img;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -285,6 +292,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -562,4 +576,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
+    public static function createFromPayload($username, array $payload)
+    {
+        $user = (new User())->setId($username)->setUsername($payload['username'] ?? '');
+        $user->setId($username)->setRoles($payload['roles'] ?? '');
+        return $user;
+    }
 }
