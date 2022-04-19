@@ -13,17 +13,33 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        jwt:
+            lexik_jwt:
+                class: App\Entity\User
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
+        login:
             provider: app_user_provider
+            pattern: ^/apip/login$
+            stateless: true
             json_login:
                 check_path: api_login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            provider: jwt
+            pattern: ^/apip/
+            stateless: true
             logout:
                 path: api_logout
+            jwt:
+                authenticator: lexik_jwt_authentication.security.jwt_authenticator
+
+        # main:
+            # lazy: true
+            # provider: app_user_provider
                 # where to redirect after logout
                 # target: app_any_route
             # activate different ways to authenticate
@@ -35,8 +51,14 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: '^/login', roles: }
-        # - { path: '^/', roles: [ROLE_VIEWER, ROLE_STREAMER] }
+         - { path: '^/apip/login', roles: }
+         - { path: '^/apip/champion_lols', roles: ROLE_USER }
+         - { path: '^/apip/league_of_legends', roles: ROLE_USER }
+         - { path: '^/apip/line_lols', roles: ROLE_USER }
+         - { path: '^/apip/users', roles: ROLE_USER }
+         - { path: '^/apip/sex', roles: ROLE_USER }
+         - { path: '^/apip/type', roles: ROLE_USER }
+         - { path: '^/apip/', roles: }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
