@@ -46,7 +46,33 @@ class OpenApiFactory implements OpenApiFactoryInterface
             'properties' => [
                 'token' => [
                     'type' => 'string',
+                    ],
+                'refresh_token' => [
+                    'type' => 'string',
+                    ]
+            ]
+        ]);
+
+        $schemas['RefreshToken'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'refresh_token' => [
+                    'type' => 'string',
                 ],
+            ]
+        ]);
+
+        $schemas['Logout'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'integer',
+                    'example' => 200,
+                ],
+                'refresh_token' => [
+                    'message' => 'string',
+                    'example' => 'The supplied refresh_token has been invalidated.',
+                ]
             ]
         ]);
 
@@ -82,11 +108,59 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
         $pathItem = new PathItem(
             post: new Operation(
+                operationId: 'refreshToken',
+                tags: ['Auth'],
+                responses: [
+                    '200' => [
+                        'description' => 'refresh Token JWT',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/Token'
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/RefreshToken'
+                            ]
+                        ]
+                    ])
+                )
+            )
+        );
+
+        $openApi->getPaths()->addPath('/apip//token/refresh', $pathItem);
+
+        $pathItem = new PathItem(
+            post: new Operation(
                 operationId: 'postApipLogout',
                 tags: ['Auth'],
                 responses: [
-                    '204' => []
-                ]
+                    '200' => [
+                        'description' => 'logout',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/Logout'
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/RefreshToken'
+                            ]
+                        ]
+                    ])
+                )
             )
         );
         $openApi->getPaths()->addPath('/apip/logout', $pathItem);

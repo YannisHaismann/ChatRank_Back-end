@@ -28,18 +28,19 @@ security:
                 check_path: api_login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            refresh_jwt:
+                check_path: /api/token/refresh
         api:
             provider: jwt
             pattern: ^/apip/
             stateless: true
-            logout:
-                path: api_logout
             jwt:
                 authenticator: lexik_jwt_authentication.security.jwt_authenticator
-
-        # main:
-            # lazy: true
-            # provider: app_user_provider
+            logout:
+                path: api_logout
+        main:
+            lazy: true
+            provider: app_user_provider
                 # where to redirect after logout
                 # target: app_any_route
             # activate different ways to authenticate
@@ -51,13 +52,14 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: '^/apip/login', roles: }
+         - { path: '^/apip/logout', roles: }
          - { path: '^/apip/champion_lols', roles: ROLE_USER }
          - { path: '^/apip/league_of_legends', roles: ROLE_USER }
          - { path: '^/apip/line_lols', roles: ROLE_USER }
          - { path: '^/apip/users', roles: ROLE_USER }
          - { path: '^/apip/sex', roles: ROLE_USER }
          - { path: '^/apip/type', roles: ROLE_USER }
+         - { path: '^/apip/(login|token/refresh)', roles: }
          - { path: '^/apip/', roles: }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
