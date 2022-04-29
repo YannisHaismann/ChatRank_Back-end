@@ -11,14 +11,14 @@ CREATE TABLE `user`(
     `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
     `roles` json NOT NULL,
     `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `firstname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `lastname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `firstname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `lastname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `date_of_birthday` datetime NOT NULL,
+    `date_of_birthday` datetime DEFAULT NULL,
     `url_profile_img` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `phone_number` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `type_id` int NOT NULL,
-    `sex_id` int NOT NULL,
+    `sex_id` int DEFAULT NULL,
     `viewers` longtext COLLATE utf8mb4_unicode_ci COMMENT '(DC2Type:simple_array)',
     `streamers` longtext COLLATE utf8mb4_unicode_ci COMMENT '(DC2Type:simple_array)',
     `date_of_update` datetime NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `sex` (
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `league_of_legend` (
+CREATE TABLE `league_of_legend` (
     `id` int NOT NULL AUTO_INCREMENT,
     `user_id` int NOT NULL,
     `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `league_of_legend` (
     UNIQUE KEY `UNIQ_832D2162A76ED395` (`user_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `line_lol` (
+CREATE TABLE `line_lol` (
     `id` int NOT NULL AUTO_INCREMENT,
     `league_of_legend_id` int NOT NULL,
     `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `line_lol` (
     KEY `IDX_EBA68217E452936B` (`league_of_legend_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `champion_lol` (
+CREATE TABLE `champion_lol` (
     `id` int NOT NULL AUTO_INCREMENT,
     `league_of_legend_id` int NOT NULL,
     `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -73,6 +73,15 @@ CREATE TABLE IF NOT EXISTS `champion_lol` (
     PRIMARY KEY (`id`),
     KEY `IDX_441B9DF9E452936B` (`league_of_legend_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `refresh_tokens` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `refresh_token` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `valid` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `UNIQ_9BACE7E1C74F2195` (`refresh_token`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE `user` ADD CONSTRAINT `FK_8D93D6495A2DB2A0` FOREIGN KEY (`sex_id`) REFERENCES `sex` (`id`);
 ALTER TABLE `user` ADD CONSTRAINT `FK_8D93D649C54C8C93` FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);

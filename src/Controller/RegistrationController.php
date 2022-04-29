@@ -151,8 +151,6 @@ class RegistrationController extends AbstractController
     {
         if($firstname != null){
             $user->setFirstname($firstname);
-        }else{
-            $errorList [] = "error firstname cannot be null";
         }
     }
 
@@ -160,8 +158,6 @@ class RegistrationController extends AbstractController
     {
         if($lastname != null){
             $user->setLastname($lastname);
-        }else{
-            $errorList [] = "error lastname cannot be null";
         }
     }
 
@@ -199,8 +195,6 @@ class RegistrationController extends AbstractController
         if($sex != null){
             $sex = $sexRepository->find((int)$request->get('sex'));
             $user->setSex($sex);
-        }else{
-            $errorList [] = "error sex cannot be null";
         }
     }
 
@@ -212,8 +206,6 @@ class RegistrationController extends AbstractController
         if($dateBirthday != null){
             $dateBirthday = new \DateTime($dateBirthday);
             $user->setDateOfBirthday($dateBirthday);
-        }else{
-            $errorList [] = "error dateOfBirthday cannot be null";
         }
     }
 }
