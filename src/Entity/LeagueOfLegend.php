@@ -72,13 +72,13 @@ class LeagueOfLegend
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity=LineLol::class, mappedBy="leagueOfLegend")
+     * @ORM\OneToMany(targetEntity=LineLol::class, mappedBy="leagueOfLegend", cascade={"persist", "remove"})
      * @Groups ("user:read")
      */
     private $linesLol;
 
     /**
-     * @ORM\OneToMany(targetEntity=ChampionLol::class, mappedBy="leagueOfLegend")
+     * @ORM\OneToMany(targetEntity=ChampionLol::class, mappedBy="leagueOfLegend", cascade={"persist", "remove"})
      * @Groups ("user:read")
      */
     private $championsLol;

@@ -134,7 +134,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
             )
         );
 
-        $openApi->getPaths()->addPath('/apip//token/refresh', $pathItem);
+        $openApi->getPaths()->addPath('/apip/token/refresh', $pathItem);
 
         $pathItem = new PathItem(
             post: new Operation(
