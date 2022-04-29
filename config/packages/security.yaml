@@ -30,9 +30,10 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             refresh_jwt:
                 check_path: /api/token/refresh
+
         api:
             provider: jwt
-            pattern: ^/apip/
+            pattern: ^/apip
             stateless: true
             jwt:
                 authenticator: lexik_jwt_authentication.security.jwt_authenticator
@@ -40,7 +41,6 @@ security:
                 path: api_logout
         main:
             lazy: true
-            provider: app_user_provider
                 # where to redirect after logout
                 # target: app_any_route
             # activate different ways to authenticate
@@ -53,6 +53,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
          - { path: '^/apip/logout', roles: }
+         - { path: '^/apip/users/register', roles: }
          - { path: '^/apip/champion_lols', roles: ROLE_USER }
          - { path: '^/apip/league_of_legends', roles: ROLE_USER }
          - { path: '^/apip/line_lols', roles: ROLE_USER }
