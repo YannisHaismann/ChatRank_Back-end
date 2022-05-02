@@ -14,9 +14,9 @@ VALUES
 (3, 'vincent@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$Hx.WZRB3q51NTBxCj/KiP.MF1BZBEsA8VHSevF8RH8Q442vISfL/2', 'vincent', 'mercier', 'vincent44', '1990-09-17 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 1, '1', '1', '2022-03-14 16:04:00'),
 (4, 'kevin@gmail.com', '[\"ROLE_STREAMER\"]', '$2y$13$Hx.WZRB3q51NTBxCj/KiP.MF1BZBEsA8VHSevF8RH8Q442vISfL/2', 'kevin', 'caron', 'kevin13', '1994-03-15 16:19:44', 'default-profile-picture.jpg', '0600000000', 2, 1, NULL, NULL, '2022-03-16 16:04:08'),
 (5, 'marie@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$LWMfxbOf0oZWfhPW5NrmReatojfye79XTkFNPOP.eIP9vGXTb7jES', 'marie', 'lemarchand', 'marie60', '1991-05-08 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, '1', '1', '2022-03-21 14:11:55'),
-(6, 'julie@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$p2CUaPhyRYD163fgm/nyz.opCr07scCUQvjP1FsEiUwyQWDf3/7j.', 'julie', 'guichard,', 'julie94', '1991-12-16 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, NULL, NULL, '2022-03-31 08:10:55'),
-(7, 'vick@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$gUfTwGiGKfYPBSUokGmc1.y/0r.NYE4RSreYcLHMnF5nYE5CU9JRS', 'vick', 'leclerc,', 'vick34', '1989-02-27 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, NULL, NULL, '2022-03-31 08:33:45'),
-(8, 'sarah@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$6.GMEsgkQJB.gSefAAYq8O/N6hfvek1quqEXLgsokGUsrAgAQkrzq', 'sarah', 'monnier,', 'sarah', '1991-05-08 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, NULL, NULL, '2022-04-01 16:26:48');
+(6, 'julie@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$p2CUaPhyRYD163fgm/nyz.opCr07scCUQvjP1FsEiUwyQWDf3/7j.', 'julie', 'guichard', 'julie94', '1991-12-16 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, NULL, NULL, '2022-03-31 08:10:55'),
+(7, 'vick@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$gUfTwGiGKfYPBSUokGmc1.y/0r.NYE4RSreYcLHMnF5nYE5CU9JRS', 'vick', 'leclerc', 'vick34', '1989-02-27 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, NULL, NULL, '2022-03-31 08:33:45'),
+(8, 'sarah@gmail.com', '[\"ROLE_VIEWER\"]', '$2y$13$6.GMEsgkQJB.gSefAAYq8O/N6hfvek1quqEXLgsokGUsrAgAQkrzq', 'sarah', 'monnier', 'sarah', '1991-05-08 00:00:00', 'default-profile-picture.jpg', '0600000000', 1, 2, NULL, NULL, '2022-04-01 16:26:48');
 
 INSERT INTO `league_of_legend` (`id`, `user_id`, `username`, `level`, `actual_season`, `ranked_solo`, `ranked_flex`, `win`, `loose`)
 VALUES
