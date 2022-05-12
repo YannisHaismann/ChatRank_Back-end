@@ -6,7 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\FindUsersStreamerController;
 use App\Controller\CountOfViewersUser;
 use App\Controller\ListOfViewersUser;
-use App\Controller\MeController;
+use App\Controller\ModifyPasswordController;
 use App\Controller\RegistrationController;
 use App\Controller\UpdateListOfStreamersUser;
 use App\Controller\UserByUsernameController;
@@ -157,6 +157,19 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'PUT',
         'DELETE',
         'PATCH',
+        'modify password' => [
+            'method' => 'POST',
+            'path' => '/users/password/{id}/{password}',
+            'controller' => ModifyPasswordController::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'normalization_context' => [
+                'groups' => ['user:read'],
+            ],
+            'openapi_context' => [
+                'summary' => 'Modify password of user',
+            ],
+        ],
         'add streamer' => [
             'method' => 'POST',
             'path' => '/users/streamer/{id}/{id_streamer}',
@@ -173,7 +186,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     ],
 )]
 
-class User implements UserInterface,\Serializable, JWTUserInterface
+class User implements UserInterface,\Serializable, JWTUserInterface, \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
