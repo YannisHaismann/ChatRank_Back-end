@@ -96,6 +96,29 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 ],
             ],
         ],
+        'modify password' => [
+            'method' => 'POST',
+            'path' => '/users/password',
+            'deserialize' => false,
+            'controller' => ModifyPasswordController::class,
+            'filters' => [],
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => 'Modify password of user',
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                "password" => "string",
+                                'example' => [
+                                    "password" => "string",
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+            ],
+        ],
     ],
     itemOperations: [
         'get',
@@ -157,19 +180,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'PUT',
         'DELETE',
         'PATCH',
-        'modify password' => [
-            'method' => 'POST',
-            'path' => '/users/password/{id}/{password}',
-            'controller' => ModifyPasswordController::class,
-            'filters' => [],
-            'pagination_enabled' => false,
-            'normalization_context' => [
-                'groups' => ['user:read'],
-            ],
-            'openapi_context' => [
-                'summary' => 'Modify password of user',
-            ],
-        ],
         'add streamer' => [
             'method' => 'POST',
             'path' => '/users/streamer/{id}/{id_streamer}',

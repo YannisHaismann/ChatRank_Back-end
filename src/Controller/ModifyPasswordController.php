@@ -27,7 +27,6 @@ class ModifyPasswordController extends AbstractController
         );
 
         $user->setPassword($password_hash);
-
         $entityManager->persist($user);
         $entityManager->flush();
 
