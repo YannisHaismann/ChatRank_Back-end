@@ -283,7 +283,7 @@ class User implements UserInterface,\Serializable, JWTUserInterface, \Symfony\Co
 
     /**
      * @ORM\ManyToOne(targetEntity=Sex::class, inversedBy="users")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      * @Groups ("user:read")
      */
     private $sex;
