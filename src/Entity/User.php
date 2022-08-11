@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\CountOfStreamersUser;
 use App\Controller\FindUsersStreamerController;
 use App\Controller\CountOfViewersUser;
+use App\Controller\ListOfStreamersUser;
 use App\Controller\ListOfViewersUser;
 use App\Controller\ModifyPasswordController;
 use App\Controller\RegistrationController;
@@ -139,7 +141,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'list streamers user' => [
             'method' => 'GET',
             'path' => '/users/streamers/list/{id}/{filter}',
-            'controller' => CountOfViewersUser::class,
+            'controller' => ListOfStreamersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
             'normalization_context' => [
@@ -153,7 +155,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'count streamers' => [
             'method' => 'GET',
             'path' => '/users/streamers/count/{id}',
-            'controller' => CountOfViewersUser::class,
+            'controller' => CountOfStreamersUser::class,
             'filters' => [],
             'pagination_enabled' => false,
             'normalization_context' => [
