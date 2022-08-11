@@ -16,23 +16,23 @@ class ListOfStreamersUser extends AbstractController
 
         $user = $userRepository->find(intval($id));
         $list = $user->getStreamers();
-        $listViewers = [];
+        $listStreamers = [];
 
         for($i = 0; $i < count($list); $i++){
             $user = $userRepository->find($list[$i]);
-            $listViewers [] = $user;
+            $listStreamers [] = $user;
         }
 
         if($username == 'usernameDesc'){
-            usort($listViewers, function($a, $b) {
+            usort($listStreamers, function($a, $b) {
                 return $a->getUsername() <=> $b->getUsername();
             });
         }elseif($username == 'usernameAsc'){
-            usort($listViewers, function($a, $b) {
+            usort($listStreamers, function($a, $b) {
                 return $b->getUsername() <=> $a->getUsername();
             });
         }
-        return $listViewers;
+        return $listStreamers;
     }
 
 }
